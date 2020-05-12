@@ -1,6 +1,6 @@
-extends layout.pug
+extends dashboard_layout.pug
 
 block content
-    h1.mt-4 Dashboard
-    p.lead.mb-3= `Welcome`
-    a.btn.btn-secondary(href='/users/logout') Logout
+    .container
+        h1.mt-4 Dashboard
+        p.lead.mb-3= `Welcome, ${name}`

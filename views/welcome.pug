@@ -1,6 +1,7 @@
 extends layout.pug
 
 block content
+    include partial/messages
     h1 Create an Account or Login
     a.button.btn.btn-success(type='button' href='/users/login') Login
     a.button.btn.btn-primary(type='button' href='/users/register') Register
