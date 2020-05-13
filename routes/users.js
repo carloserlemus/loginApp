@@ -13,6 +13,9 @@ router.get('/login', (req, res) => { res.render('login') })
 //Dashboard for User
 router.get('/dashboard', (req, res) => { res.render('dashboard') })
 
+//Dashboard for admin
+router.get('/admindashboard', (req, res) => { res.render('admin_dashboard') })
+
 //Registration Page
 router.get('/register', (req, res) => { res.render('register') })
 
@@ -23,7 +26,7 @@ router.post('/register', (req, res) => {
 
     // Check required fields.
     if (!name || !email || !password || !password2) {
-        errors.push({ msg: 'Please fill in all fields' })
+        errors.push({ msg: 'Please fill in missing fields' })
     }
 
     // Check if passwords match
@@ -89,18 +92,18 @@ router.post('/register', (req, res) => {
 })
 // Login
 router.post('/login', (req, res, next) => {
-  passport.authenticate('local', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/users/login',
-    failureFlash: true
-  })(req, res, next);
+    passport.authenticate('local', {
+        successRedirect: '/dashboard',
+        failureRedirect: '/users/login',
+        failureFlash: true
+    })(req, res, next);
 });
 
 // Logout
 router.get('/logout', (req, res) => {
-  req.logout();
-  req.flash('success_msg', 'You are logged out');
-  res.redirect('/users/login');
+    req.logout();
+    req.flash('success_msg', 'You are logged out');
+    res.redirect('/users/login');
 });
 
 module.exports = router;

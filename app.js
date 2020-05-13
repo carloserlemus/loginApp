@@ -20,6 +20,26 @@ mongoose.connect(db, { useNewUrlParser: true })
     .catch(err => console.log(err))
 
 // === Middleware === 
+// Admin Check
+function requireAdmin() {
+    return function (req, res, next) {
+        User.findOne({ admin: true }, function (err, user) {
+            if (err) { return next(err); }
+
+            if (!user) {
+                // Do something - the user does not exist
+            }
+
+            if (!user.admin) {
+                // Do something - the user exists but is no admin user
+            }
+
+            // Hand over control to passport
+            next();
+        });
+    }
+}
+
 // Pug 
 app.set('view engine', 'pug')
 
@@ -30,7 +50,7 @@ app.use(session({
     secret: 'keyboard cat',
     resave: true,
     saveUninitialized: true
-  }))
+}))
 
 // Passport -- middleware
 app.use(passport.initialize());
@@ -51,10 +71,11 @@ app.use((req, res, next) => {
 // === Routes ===
 app.use('/', require('./routes/index'))
 app.use('/users', require('./routes/users'))
+app.use('/admin')
 
 
-app.listen(PORT, (err)=>{
-    if (err){
+app.listen(PORT, (err) => {
+    if (err) {
         console.log(err)
     }
     console.log('Connected to port:', PORT)
