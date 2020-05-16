@@ -1,10 +1,11 @@
 {
-  "name": "loginAppRor",
+  "name": "loginapp",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon"
+    "start": "node run app.js",
+    "dev": "nodemon"
   },
   "keywords": [],
   "author": "",
