@@ -1,0 +1,26 @@
+extends layout.pug
+
+block content
+    .container
+        br
+        h4.text-center Registration Form
+        // Messages
+        include partial/messages.pug
+
+
+        form(method='POST', action='/users/register')
+            .form-group
+                label E-mail:
+                input.form-control(name='email', type='text')
+            .form-group
+                label Name:
+                input.form-control(name='name', type='text')
+            .form-group
+                label Password:
+                input.form-control(name='password', type='text')
+            .form-group
+                label Password Confirmation:
+                input.form-control(name='password2', type='text')
+
+            br
+            input.btn.btn-primary(type='submit', value='Register')

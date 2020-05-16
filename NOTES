@@ -1,0 +1,216 @@
+Making a Login App and Understanding everything.
+
+Project Overview
+    1. Create File Structure
+    2. Set up Express server
+    3. Set up basic ROUTING
+    4. Set up template engine
+    5. Connect to Mongo Atlas
+    6. Create a mongoose Model for our user.
+    7. Created partial for error messages
+    8. Established registration validation.
+    9. Saving User to Mongo Atlas
+
+
+
+Set Up
+
+1. 
+    /MODELS
+        - users.js
+    /CONFIG
+        - keys.js
+    /ROUTES
+        - index.js
+        - users.js
+    /VIEWS
+    app.js
+
+------
+App.js
+
+Install the express framework
+and initialize server.
+
+-----
+/ROUTES
+    This is where we will work on our ROUTING. For this project we have index.js and users.js. This is just a means of organizing our routes.
+    Index will be for routes that are at the root '/' and '/dashboard'
+
+    users will be for routes that involve users, all will be under /users.
+-----
+
+HOW WORKS?
+
+express.router()
+    In our project we use express' router method in index and user. The idea is that it lets us separate our files such that it's organized and readable.
+
+    This requires us to instantiate express.Router() and module.export it as well. Additionally, we need to set up middleware in our main entry file. In this
+    case that means app.use('/', required file)
+
+-------------
+
+Sensitive Information
+
+    To protect sensitive information we separate it from the main entry file. In this case we are going to make a file that contains all our sensitive information.
+    We will use the information in that file to populate the areas in which our sensitive information is required.
+
+    We're going to need to be able to access this information in this file so we have to include a module.exports
+
+    In this case our sensitivie information is going to /config/keys.js
+
+    module.exports = {
+    MongoURI: 'mongodb+srv://carloslemus:Pencil1986!@cerl-newbx.mongodb.net/RorAlexander?retryWrites=true&w=majority'
+    }
+
+    In our app file we will access this by declaring a variable that looks like so:
+
+    const dbAny = require('./config/keys').MongoURI
+-------------
+
+Connecting Mongo Atlas 
+
+    With our mongoose.connect(key) it returns something called a promise. Because of that we can connect .then() .catch() to it.
+
+    the idea seems like if we use a .then() the code inside that is accepted if the connect is successful
+    the .catch() runs code if the code is not successful.
+
+--------------
+Handling the Registration Part
+
+    We need to get DATA from the FORM. To do this we need middleware that express now has. It's a module.
+
+    We connected the express module in our app.js like so:
+
+    app.use(express.urlencoded({ extended: false }));
+
+    The cool thing is because connected it to our app.js the user.js file has access to req.body now!
+
+    Now that we can access req.body, we can access the data from the form. However, we need to use THAT data to occupy variables
+
+    So if req.body is an object with properties how do we get all that juicy information out into our variable?
+
+    This is destructuring: The idea is that we're pulling stuff out of req.body to populatre our object
+
+    const {property1, property2, property3, property4} = req.body
+
+-------------
+Validation
+
+    The idea here is we're not letting the user submit their data unless it meets certain criteria
+
+    1. IF the user hasn't entered all the field, then you don't let them submit.
+    2. If the passwords DON'T match you don't let them submit.
+
+-------------
+Partials
+    We're making a separate file that handles certain types of messages. It's nothing more than a snippet of html
+
+    The first messages were going to create are error messages. We want to see if there are errors on the page.
+
+    The idea here is that we populate the error array upon post request. That array is passed to our registration page and the partial/messages.pug 
+    has access to those errors. We instruct messages to iterate over those errors if the array list is defined.
+-------------
+Saving the User to Mongo db
+
+    Overview    
+        Creating the user, Encrypting their password, and saving to the DB, ...
+
+    1. Before submitting the user to MongoDB we want to make sure that we avoid duplication, hash the password, 
+
+        A. AVOIDING duplication
+            i. Instruct mongoose to find an email based on the email variable we created and populated with req.body.
+                If it finds an email that means that email already exists in our app. We then want to STOP the process.
+            ii. If mongoose finds a match then .findOne() returns a promise.
+            iii. using .then() we can tell it to run a function like x => {push an error to our errors array, re-render the
+            page with the error pushed to our register page}
+        
+        B. HASHING the password
+            We'll use bcrypt for hashing the password.
+
+            i. We pass our plain text password into a new instance of our mongoose User model.
+            ii. Now that we have our newUser variable that conforms to our model we need to begin hashing our password.
+            
+            iii. Creating a hash
+
+                Bcrypt has a method call genSalt
+                bcrypt.genSalt()
+
+                    This method accepts an integer (I'm guessing this is the degree to which it salts our plain text pass)
+                    a Call back with 2 arguments: err and salt.
+                        Inside this call back we call bcrypt.hash(plain text password, salt, callback)
+                            The call back in bcrypt.hash has two arguments, err and hash.
+                
+                After all that you set the password = hash. And you have your hashed password.
+
+                Now we can call the .save() method to save it to our DB.
+
+                .save() returns a promise so we can use .then and .catch
+
+-----------
+Flash Messaging
+
+Stores a message in a session and executes it after a redirect.
+
+This is trickier than when we did this with our errors. With that we pushed the error into our array, and then reloaded our page while
+giving access to that error. It was more linear.
+
+With this one, we want the message to display AFTER the redirect
+
+1. This requires middleware, so we are going to install it in our main entry file: app.js
+    const flash = require('connect-flash');
+    const session = require('express-session');
+
+    //========= Middleware - Express-Session
+    app.use(session({
+        secret: 'keyboard cat',
+        resave: true,
+        saveUninitialized: true
+    }));
+
+    //========= Middleware - Connect-Flash
+    app.use(flash)
+
+    We now have access to the flash object, req.flash
+
+2. We want different colours for different types of messages. He starts by saying that we're going to use global variables.
+He then uses, app.use() a middleware.
+
+    //Structure of a middleware.
+    app.use((req, res, next) => { })
+
+    We can set global variables in middleware with res.locals.variablename
+
+    Therefore:
+
+    app.use((req, res, next) => {
+        res.locals.variablename 
+    })
+
+    Now we're going to set the res.locals.variable = req.flash()
+
+    once those variables are established, we can pass req.flash('success_msg', 'your text here) to 
+
+-------
+Authentication
+
+Here we begin with a file called passport.js in our config folder. Why? 
+
+1. First we need to create a strategy for our passport system
+    const localStrategy = require(passport).Strategy;
+2. Additionally, we need mongoose. The reason being if we are logging in we need to search 
+the database for an email/pass that matches our login information.
+3. Bcrypt is also necessary in order to read the hashed password... as we cannot read the hashed password.
+
+4. Because we are going to be searching our db we will also need our model such that we can call our method on it.
+5. We want to export the strategy we're going to create, so create module.exports = function
+    - The function will take in passport which it will get from app.js
+
+    module.exports= function(passport) {}
+
+6. Inside our passport function we're going to use the method passport.use()
+
+    passport accepts new LocalStrategy()
+
+
+    

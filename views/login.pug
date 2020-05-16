@@ -1,0 +1,21 @@
+extends layout.pug
+
+block content
+    include partial/messages.pug
+    style.
+        .card {
+        margin: 0 auto; /* Added */
+        float: none; /* Added */
+        margin-bottom: 10px; /* Added */
+        }
+    br
+    .card.text-center(style="width: 35%")
+        .card-body
+            form(method='POST', action='/users/login')
+                h1.h3.mb-3.font-weight-normal Sign In
+                label.sr-only(for='inputEmail') Email address
+                input#inputEmail.form-control(name='email' type='email' placeholder='Email address' required='' autofocus='')
+                label.sr-only(for='inputPassword') Password
+                input#inputPassword.form-control(type='password' name='password' placeholder='Password' required='')
+                br
+                button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
