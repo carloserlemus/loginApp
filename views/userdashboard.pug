@@ -2,4 +2,6 @@ extends dashboard_layout.pug
 
 block content
     .container
-        h1 Welcome!
+        h1= `Welcome, ${name}`
+        p= `Is this user an admin: ${isAdmin}`
+        p= `User Email: ${email}`

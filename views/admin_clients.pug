@@ -1,0 +1,20 @@
+extends admindashboard_layout.pug
+
+block content
+    style.
+        img {
+            border-radius: 50%;
+        }
+    .container
+        br
+        .row
+            each client in clients
+                .card(style="width: 33%")
+                    .card-header
+                        .text-center
+                            img(src=client.img width="200px" height="200px")
+                    .card-body
+                    .card-footer
+                        .text-center
+                            h5.card-title= `${client.name}`
+                            p.card-text= `${client.email}`

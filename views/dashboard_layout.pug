@@ -10,7 +10,7 @@ head
 body
     .container-fluid
         nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
-            a.navbar-brand(href='/') Health By Design
+            a.navbar-brand(href='#') Health By Design
             button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarNavDropdown' aria-controls='navbarNavDropdown' aria-expanded='false' aria-label='Toggle navigation')
                 span.navbar-toggler-icon
             #navbarNavDropdown.collapse.navbar-collapse
@@ -22,8 +22,7 @@ body
                     li.nav-item
                         a.nav-link(href='#') Report
                     li.nav-item
-                        a.nav-link(href='#') LOG OUT
-
+                        a.nav-link(href='/users/logout') LOG OUT
         block content
 
 script(src='https://code.jquery.com/jquery-3.4.1.slim.min.js' integrity='sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n' crossorigin='anonymous')
